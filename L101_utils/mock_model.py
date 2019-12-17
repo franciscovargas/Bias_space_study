@@ -8,15 +8,17 @@ class MockModel(object):
 
     @classmethod
     def from_file(cls, file_name):
-        name, extension = file_name.split(".")
+        *name, extension = file_name.split(".")
+        print(name, extension)
         bin = True if "bin" in extension else False
 
-        mod = gensim.models.Word2Vec.load_word2vec_format(file_name, binary=bin)
+        mod = gensim.models.KeyedVectors.load_word2vec_format(file_name, binary=bin)
 
         return cls(mod.wv.index2word, mod.wv.vectors)
 
-    def __init__(self, word_list, X):
-        self.key  = OrderedDict(index2word, zip(list(range(len(word_list)))))
+    def __init__(self, index2word, X):
+        self.key  = OrderedDict(zip(index2word,
+                                    list(range(len(index2word)))))
         self.X = X
         self.n, self.dim = X.shape
         self.index2word = index2word
@@ -27,10 +29,11 @@ class MockModel(object):
     def get_word_vector(self, w):
         if w in self.key:
             return self.X[self.key[w], :]
-        elif w.lower() in in self.key:
+        elif w.lower() in self.key:
             return self.X[self.key[w.lower()], :]
         elif w.lower().strip() in self.key:
             return self.X[self.key[w.lower().strip()], :]
         else:
+            print("cake: ", w)
             warnings.warn(f"Word {w} not in model", RuntimeWarning)
-            return np.zeros(dim)
+            return np.zeros(self.dim) + 1e-10
