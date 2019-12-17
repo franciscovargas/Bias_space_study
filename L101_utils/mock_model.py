@@ -7,14 +7,17 @@ import warnings
 class MockModel(object):
 
     @classmethod
-    def from_file(cls, file_name):
+    def from_file(cls, file_name, mock=True):
         *name, extension = file_name.split(".")
         print(name, extension)
         bin = True if "bin" in extension else False
 
         mod = gensim.models.KeyedVectors.load_word2vec_format(file_name, binary=bin)
 
-        return cls(mod.wv.index2word, mod.wv.vectors)
+        if mock:
+            return cls(mod.wv.index2word, mod.wv.vectors)
+        else:
+            return mod
 
     def __init__(self, index2word, X):
         self.key  = OrderedDict(zip(index2word,
