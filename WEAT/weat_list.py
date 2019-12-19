@@ -62,3 +62,75 @@ class WEATLists(object):
     WEFAT_2_Androgynous_Names = ['Kelly', 'Tracy', 'Jamie', 'Jackie', 'Jesse', 'Courtney', 'Lynn', 'Taylor', 'Leslie', 'Shannon', 'Stacey', 'Jessie', 'Shawn', 'Stacy', 'Casey', 'Bobby', 'Terry', 'Lee', 'Ashley', 'Eddie', 'Chris', 'Jody', 'Pat', 'Carey', 'Willie', 'Morgan', 'Robbie', 'Joan', 'Alexis', 'Kris', 'Frankie', 'Bobbie', 'Dale', 'Robin', 'Billie', 'Adrian', 'Kim', 'Jaime', 'Jean', 'Francis', 'Marion', 'Dana', 'Rene', 'Johnnie', 'Jordan', 'Carmen', 'Ollie', 'Dominique', 'Jimmie', 'Shelby']
     WEFAT_2_Female_attributes = WEFAT_1_Female_attributes
     WEFAT_2_Male_attributes = WEFAT_1_Male_attributes
+
+
+    TEST_LIST = [
+        [
+            W_1_Flowers,
+            W_1_Insects,
+            W_1_Pleasant,
+            W_1_Unpleasant
+        ],
+        [
+            W_2_Instruments,
+            W_2_Weapons,
+            W_2_Pleasant,
+            W_2_Unpleasant
+        ],
+        [
+            W_3_European_American_names,
+            W_3_African_American_names,
+            W_3_Pleasant,
+            W_3_Unpleasant
+        ],
+        [
+            W_4_European_American_names,
+            W_4_African_American_names,
+            W_4_Pleasant,
+            W_4_Unpleasant
+        ],
+        [
+            W_5_European_American_names,
+            W_5_African_American_names,
+            W_5_Pleasant,
+            W_5_Unpleasant
+        ],
+        [
+            W_6_Male_names,
+            W_6_Female_names,
+            W_6_Career,
+            W_6_Family
+        ],
+        [
+            W_7_Math,
+            W_7_Arts,
+            W_7_Male_terms,
+            W_7_Female_terms
+        ],
+        [
+            W_8_Science,
+            W_8_Arts,
+            W_8_Male_terms,
+            W_8_Female_terms
+        ],
+        [
+            W_9_Mental_disease,
+            W_9_Physical_disease,
+            W_9_Temporary,
+            W_9_Permanent
+        ],
+        [
+            W_10_Young_peoples_names,
+            W_10_Old_peoples_names,
+            W_10_Pleasant,
+            W_10_Unpleasant
+        ],
+    ]
+
+# WEFAT_1_Careers
+# WEFAT_1_Female_attributes
+# WEFAT_1_Male_attributes
+#
+# WEFAT_2_Androgynous_Names
+# WEFAT_2_Female_attributes
+# WEFAT_2_Male_attributes
