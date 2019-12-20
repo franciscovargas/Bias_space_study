@@ -100,14 +100,7 @@ def hard_debiase(emb,
             word2index  = [emb.vocab[e1].index, emb.vocab[e2].index]
             remb, _ = equalize_boluk(emb.vectors[word2index,:], P)
             emb.vectors[word2index,:] = remb
-            print(e1, e2)
-            print(np.sign(_)[:,1:7])
-            try:
-                assert( (np.sign(_[0,:]) == -np.sign(_[1,:])).all() )
-            except:
-                print(_[1,~(np.sign(_[0,:]) == -np.sign(_[1,:]))])
-                print(_[0,~(np.sign(_[0,:]) == -np.sign(_[1,:]))])
-                import pdb; pdb.set_trace()
+
     return emb
 
 
