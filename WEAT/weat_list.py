@@ -63,7 +63,18 @@ class WEATLists(object):
     WEFAT_2_Female_attributes = WEFAT_1_Female_attributes
     WEFAT_2_Male_attributes = WEFAT_1_Male_attributes
 
-
+    INDEX = [
+        "Flower, Insect vs Pleasant, Unpleasant",
+        "Instruments, Weapons vs Pleasant, Unpleasant",
+        "European Ameircan names, African American names vs Pleasant Unpleasant 1",
+        "European Ameircan names, African American names vs Pleasant Unpleasant 2",
+        "European Ameircan names, African American names vs Pleasant Unpleasant 3",
+        "Male Names, Female Names vs Careers, Family",
+        "Math, Arts vs Male Terms, Female Terms",
+        "Science, Arts vs Male Terms, Female Terms",
+        "Mental Disease, Physical Disease vs Temporary , Permanent",
+        "Young peoples names, Old peoples names vs Pleasant Unpleasant 1"
+    ]
     TEST_LIST = [
         [
             W_1_Flowers,
