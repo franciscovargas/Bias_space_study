@@ -20,8 +20,8 @@ def create_nu_boluk(X, P):
 
 def equalize_boluk(E, P, N=None, debug=True):
 
-    nu, mu_b = create_nu_boluk(E, P)
-    E = E.dot(P) - 0 * mu_b
+    nu = (np.eye(len(P)) - P).dot( E.mean(axis=0) )
+    E = (E - E.mean(axis=0)[None, ...]).dot(P)
 
     E /= np.linalg.norm(E, axis=1)[..., None]
 
