@@ -17,12 +17,6 @@ def get_pc_projection_boluk(X, k=1, mean_rev=True):
     return V.dot(V.T), V
 
 
-def create_nu_boluk(X, P):
-    mu = X.mean(axis=0)
-    nu = mu - P.dot(mu)
-    return nu, P.dot(mu)
-
-
 def equalize_boluk(E, P, N=None, debug=True):
 
     nu = (np.eye(len(P)) - P).dot( E.mean(axis=0) )
@@ -70,7 +64,6 @@ def hard_debiase(emb,
                  n_components=1,
                  norm=True):
 
-#     emb = deepcopy(emb)
     if norm:
         emb.vectors /= np.linalg.norm(emb.vectors,  axis=1)[..., None]
 
@@ -83,7 +76,7 @@ def hard_debiase(emb,
     all_words = set(emb.vocab.keys())
     neutral_words = list(all_words - gendered_words)
 
-    word2index = [emb.vocab[k].index for k in neutral_words[:10000]]
+    word2index = [emb.vocab[k].index for k in neutral_words]
 
     neutral = emb.vectors[word2index,:]
     emb.vectors[word2index,:] = neutralise_boluk(neutral, P)
