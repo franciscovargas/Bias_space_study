@@ -1,5 +1,10 @@
 import json
 import numpy as np
+from L101_utils.data_paths import (wikift, bolu_gender_specific,
+                                   bolu_equalize_pairs, googlew2v,
+                                   bolu_definitional_pairs, googlew2vtxt)
+import numpy.linalg as la
+from L101_utils.mock_model import MockModel
 
 
 def get_pc_projection_boluk(X, k=1, mean_rev=True):
@@ -76,9 +81,9 @@ def hard_debiase(emb,
         gendered_words = set(json.load(f))
 
     all_words = set(emb.vocab.keys())
-    neutral_words = all_words - gendered_words
+    neutral_words = list(all_words - gendered_words)
 
-    word2index = [emb.vocab[k].index for k in neutral_words]
+    word2index = [emb.vocab[k].index for k in neutral_words[:10000]]
 
     neutral = emb.vectors[word2index,:]
     emb.vectors[word2index,:] = neutralise_boluk(neutral, P)
@@ -95,6 +100,14 @@ def hard_debiase(emb,
             word2index  = [emb.vocab[e1].index, emb.vocab[e2].index]
             remb, _ = equalize_boluk(emb.vectors[word2index,:], P)
             emb.vectors[word2index,:] = remb
+            print(e1, e2)
+            print(np.sign(_)[:,1:7])
+            try:
+                assert( (np.sign(_[0,:]) == -np.sign(_[1,:])).all() )
+            except:
+                print(_[1,~(np.sign(_[0,:]) == -np.sign(_[1,:]))])
+                print(_[0,~(np.sign(_[0,:]) == -np.sign(_[1,:]))])
+                import pdb; pdb.set_trace()
     return emb
 
 
