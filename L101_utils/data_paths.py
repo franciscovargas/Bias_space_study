@@ -7,6 +7,7 @@ data = path.join(root, "data")
 data_bolu = path.join(data, "bolukbasi_data")
 
 googlew2v = path.join(data, "GoogleNews-vectors-negative300.bin")
+googlew2vtxt = path.join(data, "GoogleNews-vectors-negative300.txt")
 wikift = path.join(data, "wiki-news-300d-1M.vec")
 
 bolu_googlew2v = path.join(data_bolu, "GoogleNews-vectors-negative300-hard-debiased.bin")
