@@ -2,7 +2,7 @@ import json
 import numpy as np
 from L101_utils.data_paths import (wikift, bolu_gender_specific,
                                    bolu_equalize_pairs, googlew2v,
-                                   bolu_definitional_pairs, googlew2vtxt)
+                                   bolu_definitional_pairs)
 import numpy.linalg as la
 from L101_utils.mock_model import MockModel
 
@@ -62,7 +62,8 @@ def hard_debiase(emb,
                  equalize_pair_file=bolu_equalize_pairs,
                  def_pair_file=bolu_definitional_pairs,
                  n_components=1,
-                 norm=True):
+                 norm=True,
+                 mask=None):
 
     if norm:
         emb.vectors /= np.linalg.norm(emb.vectors,  axis=1)[..., None]
@@ -74,7 +75,9 @@ def hard_debiase(emb,
         gendered_words = set(json.load(f))
 
     all_words = set(emb.vocab.keys())
-    neutral_words = list(all_words - gendered_words)
+    if mask is None: mask = all_words
+    neutral_words = all_words - gendered_words
+    neutral_words = list(set(mask) & neutral_words)
 
     word2index = [emb.vocab[k].index for k in neutral_words]
 
@@ -89,14 +92,32 @@ def hard_debiase(emb,
                                                            (e1.upper(), e2.upper())]}
     print(candidates, "started equalising")
     for (e1, e2) in candidates:
-        if (e1 in all_words and e2 in all_words):
+        if (e1 in mask and e2 in mask):
             word2index  = [emb.vocab[e1].index, emb.vocab[e2].index]
             remb, _ = equalize_boluk(emb.vectors[word2index,:], P)
             emb.vectors[word2index,:] = remb
 
-    return emb
+    sub_mask = [ k for k in mask if k in all_words]
+    w2ind_all = [emb.vocab[k].index for k in sub_mask]
+    try:
+        emb_debiased = MockModel.from_matrix(sub_mask, emb.vectors[w2ind_all, :])
+    except:
+        import pdb; pdb.set_trace()
+    return emb_debiased
 
 
 if __name__ == '__main__':
+    from WEAT.weat_list import WEATLists
+    from L101_utils.data_paths import data
+    from os.path import join
+
+    out_file = join(data, "my_weat_linear_debias_vectors.bin")
+    mask = list(set([w.lower() for w in WEATLists.weat_vocab]))
     emb = MockModel.from_file(googlew2v, mock=False)
-    embnasius = hard_debiase(emb)
+    emb = hard_debiase(emb, mask=mask)
+    try:
+        emb.save_word2vec_format(out_file, binary=True)
+    except:
+        import traceback
+        traceback.print_exc()
+        import pdb; pdb.set_trace()

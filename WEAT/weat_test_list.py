@@ -1,6 +1,6 @@
 from WEAT.weat_slow import WEATTest
 from WEAT.weat_list import WEATLists
-from L101_utils.data_paths import bolu_googlew2v, googlew2v
+from L101_utils.data_paths import bolu_googlew2v, googlew2v, my_linear_debias
 import numpy as np
 import WEAT.weat as weat
 from L101_utils.mock_model import MockModel

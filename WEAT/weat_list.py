@@ -1,3 +1,6 @@
+from itertools import chain
+
+
 class WEATLists(object):
     W_1_Flowers = ['aster', 'clover', 'hyacinth', 'marigold', 'poppy', 'azalea', 'crocus', 'iris', 'orchid', 'rose', 'bluebell', 'daffodil', 'lilac', 'pansy', 'tulip', 'buttercup', 'daisy', 'lily', 'peony', 'violet', 'carnation', 'gladiola' ,'magnolia', 'petunia', 'zinnia']
     W_1_Insects = ['ant', 'caterpillar', 'flea', 'locust', 'spider', 'bedbug', 'centipede', 'fly', 'maggot', 'tarantula', 'bee', 'cockroach', 'gnat', 'mosquito', 'termite', 'beetle', 'cricket', 'hornet', 'moth', 'wasp', 'blackfly', 'dragonfly', 'horsefly', 'roach', 'weevil']
@@ -137,6 +140,8 @@ class WEATLists(object):
             W_10_Unpleasant
         ],
     ]
+
+    weat_vocab = list(chain(*list(chain(*TEST_LIST))))
 
 # WEFAT_1_Careers
 # WEFAT_1_Female_attributes

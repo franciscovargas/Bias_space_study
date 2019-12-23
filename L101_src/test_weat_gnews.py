@@ -4,7 +4,7 @@ from WEAT.weat_slow import WEATTest
 from WEAT.weat_list import WEATLists
 import WEAT.weat as weat
 from L101_utils.mock_model import MockModel
-from L101_utils.data_paths import googlew2v
+from L101_utils.data_paths import googlew2v, my_linear_debias
 
 def main():
     emb = MockModel.from_file(googlew2v, mock=False)

@@ -19,6 +19,14 @@ class MockModel(object):
         else:
             return mod
 
+    @staticmethod
+    def from_matrix(entities, matrix):
+        v, d = matrix.shape
+        print(v,d)
+        emb = gensim.models.keyedvectors.Word2VecKeyedVectors(vector_size=d)
+        emb.add(entities=entities, weights=matrix)
+        return emb
+
     def __init__(self, index2word, X):
         self.key  = OrderedDict(zip(index2word,
                                     list(range(len(index2word)))))
