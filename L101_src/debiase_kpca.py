@@ -5,42 +5,25 @@ from L101_utils.data_paths import (wikift, bolu_gender_specific,
                                    bolu_definitional_pairs)
 import numpy.linalg as la
 from L101_utils.mock_model import MockModel
+from sklearn.decomposition import PCA, KernelPCA
 
 
-def get_pc_projection_boluk(X, k=1, mean_rev=True):
-    mean_rev = int(mean_rev)
-    n, d = X.shape
-    X = X - mean_rev * X.mean(axis=0)
-    C = (X.T.dot(X) / n)
-    D, V = la.eigh(C)
-    V = V[:, :k]
-    return V.dot(V.T), V
-
-
-def equalize_boluk(E, P, N=None, debug=True):
-
-    nu = (np.eye(len(P)) - P).dot( E.mean(axis=0) )
-    E = (E - E.mean(axis=0)[None, ...]).dot(P)
-
-    E /= np.linalg.norm(E, axis=1)[..., None]
-
-    v = np.linalg.norm(nu)
-    fac = np.sqrt(1 - v**2)
-    remb = nu +  fac * E
-
-    return remb, E
-
-
-def neutralise_boluk(X, P):
-    I = np.eye(P.shape[0])
-    out =  X.dot( (I - P).T )
+def neutralise_kpca(X, P):
+    X_k = P.transform(X)
+    out = X - P.inverse_transform(X_k)
     return out
 
 
-def generate_subspace_projection(emb,
-                                 pair_file=bolu_definitional_pairs,
-                                 n_components=1):
-    with open(pair_file, "r") as f:
+def get_kpc_projection(X, k=1, mean_rev=True):
+    kpca2 = KernelPCA(kernel="rbf", fit_inverse_transform=True,
+                      n_components=k, degree=3)
+
+    kpca2.fit(X)
+    return kpca2
+
+
+def generate_subspace_projection(emb, def_pair_file, n_components):
+    with open(def_pair_file, "r") as f:
         pairs = json.load(f)
 
     matrix = []
@@ -50,9 +33,9 @@ def generate_subspace_projection(emb,
         matrix.append(emb.vectors[emb.vocab[b.lower()].index] - center)
 
     matrix = np.asarray(matrix)
-    P, V = get_pc_projection_boluk(matrix, k=n_components)
+    P = get_kpc_projection(matrix, k=n_components)
 
-    return P, V
+    return P
 
 
 def hard_debiase(emb,
@@ -66,34 +49,20 @@ def hard_debiase(emb,
     if norm:
         emb.vectors /= np.linalg.norm(emb.vectors,  axis=1)[..., None]
 
-    P, V = generate_subspace_projection(emb, def_pair_file, n_components)
-    assert (P == P.T).all()
+    P = generate_subspace_projection(emb, def_pair_file, n_components)
 
     with open(gender_specific_file, "r") as f:
         gendered_words = set(json.load(f))
 
     all_words = set(emb.vocab.keys())
     if mask is None: mask = all_words
-    neutral_words = all_words - gendered_words
-    neutral_words = list(set(mask) & neutral_words)
+
+    neutral_words = list(set(mask) & all_words)
 
     word2index = [emb.vocab[k].index for k in neutral_words]
 
     neutral = emb.vectors[word2index,:]
-    emb.vectors[word2index,:] = neutralise_boluk(neutral, P)
-
-    with open(bolu_equalize_pairs, "r") as f:
-        equalize_words = json.load(f)
-
-    candidates = {x for e1, e2 in equalize_words for x in [(e1.lower(), e2.lower()),
-                                                           (e1.title(), e2.title()),
-                                                           (e1.upper(), e2.upper())]}
-    print(candidates, "started equalising")
-    for (e1, e2) in candidates:
-        if (e1 in mask and e2 in mask):
-            word2index  = [emb.vocab[e1].index, emb.vocab[e2].index]
-            remb, _ = equalize_boluk(emb.vectors[word2index,:], P)
-            emb.vectors[word2index,:] = remb
+    emb.vectors[word2index,:] = neutralise_kpca(neutral, P)
 
     sub_mask = [ k for k in mask if k in all_words]
     w2ind_all = [emb.vocab[k].index for k in sub_mask]
@@ -109,9 +78,9 @@ if __name__ == '__main__':
     from L101_utils.data_paths import data
     from os.path import join
 
-    n_components = 2
+    n_components = 1
 
-    out_file = join(data, f"my_weat_linear_debias_vectors_k_{n_components}.bin")
+    out_file = join(data, f"my_weat_kpca_debias_rbf_vectors_k_{n_components}.bin")
     mask = list(set([w.lower() for w in WEATLists.weat_vocab]))
     emb = MockModel.from_file(googlew2v, mock=False)
     emb = hard_debiase(emb, mask=mask, n_components=n_components)

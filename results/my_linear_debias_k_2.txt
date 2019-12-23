@@ -1,0 +1,39 @@
+Flower, Insect vs Pleasant, Unpleasant
+WEAT d =  1.5815253
+WEAT p =  0.0
+
+Instruments, Weapons vs Pleasant, Unpleasant
+WEAT d =  1.6616218
+WEAT p =  0.0
+
+European Ameircan names, African American names vs Pleasant Unpleasant 1
+WEAT d =  -0.788513
+WEAT p =  0.224
+
+European Ameircan names, African American names vs Pleasant Unpleasant 2
+WEAT d =  -0.56680137
+WEAT p =  0.24
+
+European Ameircan names, African American names vs Pleasant Unpleasant 3
+WEAT d =  -0.28449526
+WEAT p =  0.41
+
+Male Names, Female Names vs Careers, Family
+WEAT d =  1.6276484
+WEAT p =  0.0
+
+Math, Arts vs Male Terms, Female Terms
+WEAT d =  -1.1447222
+WEAT p =  0.985
+
+Science, Arts vs Male Terms, Female Terms
+WEAT d =  -0.46007597
+WEAT p =  0.823
+
+Mental Disease, Physical Disease vs Temporary , Permanent
+WEAT d =  1.4412133
+WEAT p =  0.001
+
+Young peoples names, Old peoples names vs Pleasant Unpleasant 1
+WEAT d =  -0.7515583
+WEAT p =  0.51

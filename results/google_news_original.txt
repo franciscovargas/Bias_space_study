@@ -4,8 +4,8 @@ WEAT p =  0.0
 
 Math, Arts vs Male Terms, Female Terms
 WEAT d =  0.99810797
-WEAT p =  0.039
+WEAT p =  0.017
 
 Science, Arts vs Male Terms, Female Terms
 WEAT d =  1.1587173
-WEAT p =  0.006
+WEAT p =  0.005

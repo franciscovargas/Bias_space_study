@@ -17,3 +17,5 @@ bolu_equalize_pairs = path.join(data_bolu, "equalize_pairs.json")
 bolu_definitional_pairs = path.join(data_bolu, "definitional_pairs.json")
 
 my_linear_debias = path.join(data, "my_weat_linear_debias_vectors.bin")
+my_linear_debias_k_2 = path.join(data, "my_weat_linear_debias_vectors_k_2.bin")
+my_kpca_debias_k_1 = path.join(data, "my_weat_kpca_debias_vectors_k_1.bin")
