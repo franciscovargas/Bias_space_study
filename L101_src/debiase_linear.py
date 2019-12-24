@@ -5,9 +5,10 @@ from L101_utils.data_paths import (wikift, bolu_gender_specific,
                                    bolu_definitional_pairs)
 import numpy.linalg as la
 from L101_utils.mock_model import MockModel
+from sklearn.decomposition import PCA
 
 
-def get_pc_projection_boluk(X, k=1, mean_rev=True):
+def get_pc_projection_boluk_numpy(X, k=1, mean_rev=True):
     mean_rev = int(mean_rev)
     n, d = X.shape
     X = X - mean_rev * X.mean(axis=0)
@@ -17,15 +18,25 @@ def get_pc_projection_boluk(X, k=1, mean_rev=True):
     return V.dot(V.T), V
 
 
-def equalize_boluk(E, P, N=None, debug=True):
+def get_pc_projection_boluk(X, k=1):
 
-    nu = (np.eye(len(P)) - P).dot( E.mean(axis=0) )
+    n, d = X.shape
+    pca = PCA(n_components=k)
+    pca.fit(X)
+
+    V = pca.components_[0].reshape(d, 1)
+    return V.dot(V.T), V
+
+
+def equalize_boluk(E, P, N=None, debug=True):
+    I = np.eye(len(P))
+    nu = (I - P).dot( E.mean(axis=0) )
     E = (E - E.mean(axis=0)[None, ...]).dot(P)
 
     E /= np.linalg.norm(E, axis=1)[..., None]
 
     v = np.linalg.norm(nu)
-    fac = np.sqrt(1 - v**2)
+    fac = np.sqrt(1.0 - v**2)
     remb = nu +  fac * E
 
     return remb, E
@@ -109,9 +120,9 @@ if __name__ == '__main__':
     from L101_utils.data_paths import data
     from os.path import join
 
-    n_components = 2
+    n_components = 1
 
-    out_file = join(data, f"my_weat_linear_debias_vectors_k_{n_components}.bin")
+    out_file = join(data, f"my_sk_weat_linear_debias_vectors_k_{n_components}.bin")
     mask = list(set([w.lower() for w in WEATLists.weat_vocab]))
     emb = MockModel.from_file(googlew2v, mock=False)
     emb = hard_debiase(emb, mask=mask, n_components=n_components)

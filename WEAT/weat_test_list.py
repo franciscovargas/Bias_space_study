@@ -20,5 +20,5 @@ def w_test(vec_path=None):
 
 
 if __name__ == '__main__':
-    word_vectors = join(data, "my_weat_kpca_debias_rbf_vectors_k_1.bin")
-    w_test(my_linear_debias)
+    word_vectors = join(data, "my_sk_weat_linear_debias_vectors_k_2.bin")
+    w_test(word_vectors)
