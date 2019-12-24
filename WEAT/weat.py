@@ -41,12 +41,19 @@ def weat_effect_size(X, Y, A, B, embd):
      Returns
               Effect Size
     """
-
+    print(X)
+    print(Y)
+    print(A)
+    print(B)
+    # import pdb; pdb.set_trace()
     Xmat = np.array([embd[w.lower()] for w in X if w.lower() in embd])
     Ymat = np.array([embd[w.lower()] for w in Y if w.lower() in embd])
     Amat = np.array([embd[w.lower()] for w in A if w.lower() in embd])
     Bmat = np.array([embd[w.lower()] for w in B if w.lower() in embd])
-
+    print(Xmat.shape, len(X))
+    print(Ymat.shape, len(Y))
+    print(Amat.shape, len(A))
+    print(Bmat.shape, len(B))
     XuY = list(set(X).union(Y))
     XuYmat = []
     for w in XuY:
@@ -56,7 +63,7 @@ def weat_effect_size(X, Y, A, B, embd):
 
 
     d = (np.mean(swAB(Xmat,Amat,Bmat)) - np.mean(swAB(Ymat,Amat,Bmat)))/np.std(swAB(XuYmat, Amat, Bmat))
-
+    # import pdb; pdb.set_trace()
     return d
 
 
