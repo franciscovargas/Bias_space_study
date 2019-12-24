@@ -3,10 +3,12 @@ from os import path
 
 root = path.dirname(path.abspath(path.dirname(__file__)))
 
+model = path.join(root, "models")
 data = path.join(root, "data")
 data_bolu = path.join(data, "bolukbasi_data")
 
 googlew2v = path.join(data, "GoogleNews-vectors-negative300.bin")
+small_googlew2v = path.join(data, "google_small.bin")
 wikift = path.join(data, "wiki-news-300d-1M.vec")
 
 bolu_googlew2v = path.join(data_bolu, "GoogleNews-vectors-negative300-hard-debiased.bin")

@@ -2,11 +2,13 @@ import json
 import numpy as np
 from L101_utils.data_paths import (wikift, bolu_gender_specific,
                                    bolu_equalize_pairs, googlew2v,
-                                   bolu_definitional_pairs)
+                                   bolu_definitional_pairs, model)
 import numpy.linalg as la
 from L101_utils.mock_model import MockModel
 # from sklearn.decomposition import PCA, KernelPCA
 from L101_src.kernel_PCA import myKernelPCA
+from os.path import join
+from sklearn.externals import joblib
 
 
 def neutralise_kpca(X, P):
@@ -23,7 +25,7 @@ def get_kpc_projection(X, k=1, mean_rev=True):
     return kpca2
 
 
-def generate_subspace_projection(emb, def_pair_file, n_components):
+def generate_subspace_projection(emb, def_pair_file, n_components, save_model=False):
     with open(def_pair_file, "r") as f:
         pairs = json.load(f)
 
@@ -35,6 +37,12 @@ def generate_subspace_projection(emb, def_pair_file, n_components):
 
     matrix = np.asarray(matrix)
     P = get_kpc_projection(matrix, k=n_components)
+
+    if save_model:
+        joblib_file = join(model, f"joblib_kpca_rbf_model_k_{n_components}.pkl")
+        joblib.dump(P, joblib_file)
+        print(f"Saved model at {joblib_file}")
+        exit()
 
     return P
 
@@ -50,7 +58,7 @@ def hard_debiase(emb,
     if norm:
         emb.vectors /= np.linalg.norm(emb.vectors,  axis=1)[..., None]
 
-    P = generate_subspace_projection(emb, def_pair_file, n_components)
+    P = generate_subspace_projection(emb, def_pair_file, n_components, save_model=True)
 
     with open(gender_specific_file, "r") as f:
         gendered_words = set(json.load(f))
