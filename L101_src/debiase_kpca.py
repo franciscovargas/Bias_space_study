@@ -5,7 +5,8 @@ from L101_utils.data_paths import (wikift, bolu_gender_specific,
                                    bolu_definitional_pairs)
 import numpy.linalg as la
 from L101_utils.mock_model import MockModel
-from sklearn.decomposition import PCA, KernelPCA
+# from sklearn.decomposition import PCA, KernelPCA
+from L101_src.kernel_PCA import myKernelPCA
 
 
 def neutralise_kpca(X, P):
@@ -15,8 +16,8 @@ def neutralise_kpca(X, P):
 
 
 def get_kpc_projection(X, k=1, mean_rev=True):
-    kpca2 = KernelPCA(kernel="rbf", fit_inverse_transform=True,
-                      n_components=k, degree=3)
+    kpca2 = myKernelPCA(kernel="rbf", fit_inverse_transform=True,
+                        n_components=k, degree=3)
 
     kpca2.fit(X)
     return kpca2
@@ -80,7 +81,7 @@ if __name__ == '__main__':
 
     n_components = 1
 
-    out_file = join(data, f"my_weat_kpca_debias_rbf_vectors_k_{n_components}.bin")
+    out_file = join(data, f"my_weat_mykpca_debias_rbf_vectors_k_{n_components}.bin")
     mask = list(set([w.lower() for w in WEATLists.weat_vocab]))
     emb = MockModel.from_file(googlew2v, mock=False)
     emb = hard_debiase(emb, mask=mask, n_components=n_components)
