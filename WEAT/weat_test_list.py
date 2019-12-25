@@ -12,8 +12,11 @@ from sklearn.externals import joblib
 from L101_src.PCA_sim import corrected_cosine_pca
 
 
-def w_test(vec_path=None, similarity=cosine_similarity):
+def w_test(vec_path=None, similarity=cosine_similarity, norm=True):
     emb = MockModel.from_file(vec_path, mock=False)
+
+    if norm:
+        emb.vectors /= np.linalg.norm(emb.vectors,  axis=1)[..., None]
 
     for i, (X,Y,A,B) in enumerate(WEATLists.TEST_LIST):
 
@@ -25,7 +28,8 @@ def w_test(vec_path=None, similarity=cosine_similarity):
 
 
 if __name__ == '__main__':
-    sk_model = joblib.load(join(model, "joblib_kpca_lin_model_k_None.pkl"))
+    sk_model = joblib.load(join(model, "joblib_kpca_cosine_model_k_1.pkl"))
+    print((sk_model.lambdas_.flatten() != 0).sum())
     corrected_cosine = lambda X ,Y: sk_model.corrected_cosine_similarity(X, Y)
 
     sanity_check = False

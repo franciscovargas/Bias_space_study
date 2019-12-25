@@ -1,3 +1,4 @@
+n_components = 19
 Male Names, Female Names vs Careers, Family
 WEAT d =  1.087572
 WEAT p =  0.026

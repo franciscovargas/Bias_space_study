@@ -18,8 +18,10 @@ def neutralise_kpca(X, P):
 
 
 def get_kpc_projection(X, k=1, mean_rev=True):
-    kpca2 = myKernelPCA(kernel="linear", fit_inverse_transform=True,
-                        n_components=k)
+    c = 2 * 10  * X.shape[1]
+    print(f"c is {c} ,  {X.flatten().var()}")
+    kpca2 = myKernelPCA(kernel="cosine", fit_inverse_transform=True,
+                        n_components=k, gamma=1.0/c)
 
     kpca2.fit(X)
     return kpca2
@@ -39,7 +41,7 @@ def generate_subspace_projection(emb, def_pair_file, n_components, save_model=Tr
     P = get_kpc_projection(matrix, k=n_components)
 
     if save_model:
-        joblib_file = join(model, f"joblib_kpca_lin_model_k_{n_components}.pkl")
+        joblib_file = join(model, f"joblib_kpca_cosine_model_k_{n_components}.pkl")
         joblib.dump(P, joblib_file)
         print(f"Saved model at {joblib_file}")
         exit()
@@ -87,9 +89,9 @@ if __name__ == '__main__':
     from L101_utils.data_paths import data
     from os.path import join
 
-    n_components = None
+    n_components = 1
 
-    out_file = join(data, f"my_weat_mykpca_debias_lin_vectors_k_{n_components}.bin")
+    out_file = join(data, f"my_weat_mykpca_debias_rbf_vectors_k_{n_components}.bin")
     mask = list(set([w.lower() for w in WEATLists.weat_vocab]))
     emb = MockModel.from_file(googlew2v, mock=False)
     emb = hard_debiase(emb, mask=mask, n_components=n_components)
