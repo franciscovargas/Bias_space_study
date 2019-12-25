@@ -11,6 +11,18 @@ class myKernelPCA(KernelPCA):
         self.X_ = X
         super().fit(X, y)
 
+    def kyx_center(self, Kxy, KxX, KyX):
+        K = self._get_kernel(self.X_fit_)
+
+        Kxy_c = Kxy.copy()
+
+        Kxy_c -= KxX.mean(axis=1)[..., None]
+        Kxy_c -= KyX.mean(axis=1)[None, ...]
+
+        Kxy_c += K.mean()
+
+        return Kxy_c
+
     #  def  β_k(self, X, k):
     def corrected_dot_prod(self, X, Y, center=True):
 
@@ -23,23 +35,21 @@ class myKernelPCA(KernelPCA):
         # import pdb; pdb.set_trace()
 
         KX_ = self._get_kernel(X, self.X_fit_)
-        if center: KX_ = KernelCenterer().fit_transform(KX_)
+        KXunc = KX_.copy()
+        if center: KX_ = self._centerer.transform(KX_)
 
         KY_ = self._get_kernel(Y, self.X_fit_)
-        if center: KY_ = KernelCenterer().fit_transform(KY_)
+        KYunc = KY_.copy()
+        if center: KY_ = self._centerer.transform(KY_)
 
         KXY = self._get_kernel(X, Y)
-        if center: KXY = KernelCenterer().fit_transform(KXY)
-        # KXY = np.diag(KXY)
+        if center: KXY = self.kyx_center(KXY, KXunc, KYunc)
 
         βX = KX_.dot(α)
         βY = KY_.dot(α)
-        # βX = self.transform(X)
-        # βY = self.transform(Y)
 
         correction = (βX.dot(βY.T))
-        # import pdb; pdb.set_trace()
-        # kkkkk
+
         return KXY - correction
 
     def corrected_cosine_similarity(self, X, Y, center=True):
