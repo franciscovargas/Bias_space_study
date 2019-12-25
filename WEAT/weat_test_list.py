@@ -26,8 +26,8 @@ def w_test(vec_path=None, similarity=cosine_similarity):
 
 
 if __name__ == '__main__':
-    sk_model = joblib.load(join(model, "joblib_kpca_rbf_model_k_1.pkl"))
+    sk_model = joblib.load(join(model, "joblib_kpca_lin_model_k_1.pkl"))
     corrected_cosine = lambda X ,Y: sk_model.corrected_cosine_similarity(X, Y)
     print("Lodaded model")
-    word_vectors = join(data, "my_weat_mykpca_debias_rbf_vectors_k_1.bin")
+    word_vectors = join(data, "my_weat_mykpca_debias_lin_vectors_k_1.bin")
     w_test(small_googlew2v, similarity=corrected_cosine)
