@@ -101,8 +101,7 @@ def weat_p_value(X, Y, A, B, embd, sample = 1000, similarity=cosine_similarity):
 
 
     unperturbed = test_statistic(Xmat, Ymat, Amat, Bmat, similarity)
-    # print(max(test_stats_over_permutation), min(test_stats_over_permutation))
-    # print(unperturbed)
+
     is_over = np.array([o > unperturbed for o in test_stats_over_permutation])
-    # print(is_over.sum() )
+
     return is_over.sum() / is_over.size

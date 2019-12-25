@@ -1,0 +1,11 @@
+Male Names, Female Names vs Careers, Family
+WEAT d =  1.0781275
+WEAT p =  0.017
+
+Math, Arts vs Male Terms, Female Terms
+WEAT d =  -1.1756521
+WEAT p =  0.997
+
+Science, Arts vs Male Terms, Female Terms
+WEAT d =  -0.038400713
+WEAT p =  0.548

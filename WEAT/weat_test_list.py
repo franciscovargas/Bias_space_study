@@ -9,25 +9,30 @@ from L101_utils.mock_model import MockModel
 from os.path import join
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.externals import joblib
-
-# from L101_utils.data_paths import googlew2v
+from L101_src.PCA_sim import corrected_cosine_pca
 
 
 def w_test(vec_path=None, similarity=cosine_similarity):
     emb = MockModel.from_file(vec_path, mock=False)
 
     for i, (X,Y,A,B) in enumerate(WEATLists.TEST_LIST):
-        print("")
+
         if "female" not in WEATLists.INDEX[i].lower(): continue
+        print("")
         print(WEATLists.INDEX[i])
         print('WEAT d = ', weat.weat_effect_size(X, Y, A, B, emb, similarity=similarity))
-        # bbbb
         print('WEAT p = ', weat.weat_p_value(X, Y, A, B, emb, 1000, similarity=similarity))
 
 
 if __name__ == '__main__':
-    sk_model = joblib.load(join(model, "joblib_kpca_rbf_model_k_1.pkl"))
+    sk_model = joblib.load(join(model, "joblib_kpca_lin_model_k_None.pkl"))
     corrected_cosine = lambda X ,Y: sk_model.corrected_cosine_similarity(X, Y)
+
+    sanity_check = False
+    if sanity_check:
+        sk_model_check = joblib.load(join(model, "joblib_pca_lin_model_k_1.pkl"))
+        print(f"pca mean: {sk_model_check.mean_.max()} {sk_model_check.mean_.min()}")
+        corrected_cosine = lambda X ,Y: corrected_cosine_pca(sk_model_check, X, Y)
     print("Lodaded model")
     # word_vectors = join(data, "my_weat_mykpca_debias_rbf_vectors_k_1.bin")
     w_test(small_googlew2v, similarity=corrected_cosine)

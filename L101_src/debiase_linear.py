@@ -2,10 +2,11 @@ import json
 import numpy as np
 from L101_utils.data_paths import (wikift, bolu_gender_specific,
                                    bolu_equalize_pairs, googlew2v,
-                                   bolu_definitional_pairs)
+                                   bolu_definitional_pairs, model)
 import numpy.linalg as la
 from L101_utils.mock_model import MockModel
 from sklearn.decomposition import PCA
+from sklearn.externals import joblib
 
 
 def get_pc_projection_boluk_numpy(X, k=1, mean_rev=True):
@@ -18,12 +19,16 @@ def get_pc_projection_boluk_numpy(X, k=1, mean_rev=True):
     return V.dot(V.T), V
 
 
-def get_pc_projection_boluk(X, k=1):
+def get_pc_projection_boluk(X, k=1, save_model=True):
 
     n, d = X.shape
     pca = PCA(n_components=k)
     pca.fit(X)
-
+    if save_model:
+        joblib_file = join(model, f"joblib_pca_lin_model_k_{n_components}.pkl")
+        joblib.dump(pca, joblib_file)
+        print(f"Saved model at {joblib_file}")
+        exit()
     V = pca.components_[0].reshape(d, 1)
     return V.dot(V.T), V
 

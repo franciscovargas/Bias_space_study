@@ -7,10 +7,6 @@ class myKernelPCA(KernelPCA):
     def __init__(self, *args, **kwargs):
         super(myKernelPCA, self).__init__(*args, **kwargs)
 
-    def fit(self, X, y=None):
-        self.X_ = X
-        super().fit(X, y)
-
     def kyx_center(self, Kxy, KxX, KyX):
         K = self._get_kernel(self.X_fit_)
 
@@ -23,16 +19,12 @@ class myKernelPCA(KernelPCA):
 
         return Kxy_c
 
-    #  def  β_k(self, X, k):
     def corrected_dot_prod(self, X, Y, center=True):
 
-        # non_zeros = np.flatnonzero(self.lambdas_)
-        # import pdb; pdb.set_trace()
         λ_non_zeros = np.flatnonzero(self.lambdas_)
         α = np.zeros_like(self.alphas_)
         α[:, λ_non_zeros] = (self.alphas_[:, λ_non_zeros]
                                        / np.sqrt(self.lambdas_[λ_non_zeros]))
-        # import pdb; pdb.set_trace()
 
         KX_ = self._get_kernel(X, self.X_fit_)
         KXunc = KX_.copy()

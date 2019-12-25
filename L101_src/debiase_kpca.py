@@ -25,7 +25,7 @@ def get_kpc_projection(X, k=1, mean_rev=True):
     return kpca2
 
 
-def generate_subspace_projection(emb, def_pair_file, n_components, save_model=False):
+def generate_subspace_projection(emb, def_pair_file, n_components, save_model=True):
     with open(def_pair_file, "r") as f:
         pairs = json.load(f)
 
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     from L101_utils.data_paths import data
     from os.path import join
 
-    n_components = 1
+    n_components = None
 
     out_file = join(data, f"my_weat_mykpca_debias_lin_vectors_k_{n_components}.bin")
     mask = list(set([w.lower() for w in WEATLists.weat_vocab]))
