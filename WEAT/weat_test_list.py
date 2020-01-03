@@ -10,6 +10,7 @@ from os.path import join
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.externals import joblib
 from L101_src.PCA_sim import corrected_cosine_pca
+from L101_src.debiase_kpca import custom_kernel1
 
 
 def w_test(vec_path=None, similarity=cosine_similarity, norm=True):
@@ -28,7 +29,7 @@ def w_test(vec_path=None, similarity=cosine_similarity, norm=True):
 
 
 if __name__ == '__main__':
-    sk_model = joblib.load(join(model, "joblib_kpca_cosine_model_k_1.pkl"))
+    sk_model = joblib.load(join(model, "joblib_kpca_chi2_rkhsfix_model_k_1.pkl"))
     print((sk_model.lambdas_.flatten() != 0).sum())
     corrected_cosine = lambda X ,Y: sk_model.corrected_cosine_similarity(X, Y)
 
