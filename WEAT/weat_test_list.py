@@ -1,6 +1,6 @@
 from WEAT.weat_slow import WEATTest
 from WEAT.weat_list import WEATLists
-from L101_utils.data_paths import (bolu_googlew2v, googlew2v,
+from L101_utils.data_paths import (bolu_googlew2v, googlew2v, smallc_glove,
                                    my_linear_debias, my_linear_debias_k_2,
                                    my_kpca_debias_k_1, data, model, small_googlew2v)
 import numpy as np
@@ -29,7 +29,9 @@ def w_test(vec_path=None, similarity=cosine_similarity, norm=True):
 
 
 if __name__ == '__main__':
-    sk_model = joblib.load(join(model, "joblib_kpca_chi2_rkhsfix_model_k_1.pkl"))
+    mname = join(model, "joblib_kpca_lap_rkhsfix_model_glove_k_1.pkl")
+    sk_model = joblib.load(mname)
+    print(f"loaded {mname}")
     print((sk_model.lambdas_.flatten() != 0).sum())
     corrected_cosine = lambda X ,Y: sk_model.corrected_cosine_similarity(X, Y)
 
@@ -39,5 +41,6 @@ if __name__ == '__main__':
         print(f"pca mean: {sk_model_check.mean_.max()} {sk_model_check.mean_.min()}")
         corrected_cosine = lambda X ,Y: corrected_cosine_pca(sk_model_check, X, Y)
     print("Lodaded model")
-    # word_vectors = join(data, "my_weat_mykpca_debias_rbf_vectors_k_1.bin")
-    w_test(small_googlew2v, similarity=corrected_cosine)
+
+    word_vectors = join(data, "glove_bolukbasi_complete.bin")
+    w_test(word_vectors, similarity=cosine_similarity)

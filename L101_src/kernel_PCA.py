@@ -3,6 +3,8 @@ from sklearn.preprocessing import KernelCenterer
 from sklearn.utils.validation import (check_is_fitted, check_array)
 import numpy as np
 from sklearn.metrics.pairwise import _parallel_pairwise
+from scipy import linalg
+
 
 
 class myKernelPCA(KernelPCA):
@@ -10,6 +12,9 @@ class myKernelPCA(KernelPCA):
         super(myKernelPCA, self).__init__(*args, **kwargs)
 
     def _get_kernel(self, X, Y=None):
+        """
+        Modified to handle vectorised (only) custom kernels
+        """
         if isinstance(self.kernel, str):
             return super(myKernelPCA, self)._get_kernel(X, Y)
         elif callable(self.kernel):
@@ -130,3 +135,20 @@ class myKernelPCA(KernelPCA):
 
         out = XY / ( norm_XY )
         return out
+
+    def fit_my_inverse_transform(self, X):
+        """
+        Ideally can be fitted on set larger than the original 10 point
+        training set from Bolukbasi et al. Does not project X into subspace
+        to learn the kernel directly instead learns (x, phi(x)) pairs.
+        """
+        if hasattr(X, "tocsr"):
+            raise NotImplementedError("Inverse transform not implemented for "
+                                      "sparse matrices!")
+
+        n_samples = X.shape[0]
+        K = self._get_kernel(X)
+        K.flat[::n_samples + 1] += self.alpha
+        self.dual_coef_ = linalg.solve(K, X, sym_pos=True, overwrite_a=True)
+        self.X_transformed_fit_ = X
+        self.fit_inverse_transform = True

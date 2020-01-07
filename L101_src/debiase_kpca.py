@@ -1,8 +1,8 @@
 import json
 import numpy as np
-from L101_utils.data_paths import (wikift, bolu_gender_specific,
+from L101_utils.data_paths import (wikift, bolu_gender_specific, smallc_glove,
                                    bolu_equalize_pairs, googlew2v,
-                                   bolu_definitional_pairs, model)
+                                   bolu_definitional_pairs, model, glove)
 import numpy.linalg as la
 from L101_utils.mock_model import MockModel
 # from sklearn.decomposition import PCA, KernelPCA
@@ -25,7 +25,7 @@ def neutralise_kpca(X, P):
 def get_kpc_projection(X, Y=None, k=1, mean_rev=True):
     c = 2 * np.var(X.flatten())  * X.shape[1]
     print(f"c is {c} ,  {X.flatten().var()}")
-    kpca2 = myKernelPCA(kernel=custom_kernel1, fit_inverse_transform=True,
+    kpca2 = myKernelPCA(kernel=laplacian_kernel, fit_inverse_transform=False,
                         n_components=k) #, gamma=1.0/c)
 
     kpca2.fit(X, Y)
@@ -54,7 +54,7 @@ def generate_subspace_projection(emb, def_pair_file, n_components, save_model=Tr
     P = get_kpc_projection(X, Y, k=n_components)
 
     if save_model:
-        joblib_file = join(model, f"joblib_kpca_laprbf_rkhsfix_model_k_{n_components}.pkl")
+        joblib_file = join(model, f"joblib_kpca_lap_rkhsfix_model_glove_k_{n_components}.pkl")
         joblib.dump(P, joblib_file)
         print(f"Saved model at {joblib_file}")
         exit()
@@ -106,7 +106,7 @@ if __name__ == '__main__':
 
     out_file = join(data, f"my_weat_mykpca_debias_rbf_vectors_k_{n_components}.bin")
     mask = list(set([w.lower() for w in WEATLists.weat_vocab]))
-    emb = MockModel.from_file(googlew2v, mock=False)
+    emb = MockModel.from_file(glove, mock=False)
     emb = hard_debiase(emb, mask=mask, n_components=n_components)
     try:
         emb.save_word2vec_format(out_file, binary=True)

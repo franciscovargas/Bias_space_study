@@ -1,12 +1,13 @@
 import json
 import numpy as np
-from L101_utils.data_paths import (wikift, bolu_gender_specific,
-                                   bolu_equalize_pairs, googlew2v,
-                                   bolu_definitional_pairs, model)
+from L101_utils.data_paths import (wikift, bolu_gender_specific, smallc_glove,
+                                   bolu_equalize_pairs, googlew2v, glove,
+                                   bolu_definitional_pairs, model, data)
 import numpy.linalg as la
 from L101_utils.mock_model import MockModel
 from sklearn.decomposition import PCA
 from sklearn.externals import joblib
+from os.path import join
 
 
 def get_pc_projection_boluk_numpy(X, k=1, mean_rev=True):
@@ -28,7 +29,7 @@ def get_pc_projection_boluk(X, k=1, save_model=True):
         joblib_file = join(model, f"joblib_pca_lin_model_k_{n_components}.pkl")
         joblib.dump(pca, joblib_file)
         print(f"Saved model at {joblib_file}")
-        exit()
+        # exit()
     V = pca.components_[0].reshape(d, 1)
     return V.dot(V.T), V
 
@@ -87,7 +88,7 @@ def hard_debiase(emb,
 
     with open(gender_specific_file, "r") as f:
         gendered_words = set(json.load(f))
-
+    #
     all_words = set(emb.vocab.keys())
     if mask is None: mask = all_words
     neutral_words = all_words - gendered_words
@@ -110,7 +111,7 @@ def hard_debiase(emb,
             word2index  = [emb.vocab[e1].index, emb.vocab[e2].index]
             remb, _ = equalize_boluk(emb.vectors[word2index,:], P)
             emb.vectors[word2index,:] = remb
-
+    #
     sub_mask = [ k for k in mask if k in all_words]
     w2ind_all = [emb.vocab[k].index for k in sub_mask]
     try:
@@ -127,12 +128,17 @@ if __name__ == '__main__':
 
     n_components = 1
 
-    out_file = join(data, f"my_sk_weat_linear_debias_vectors_k_{n_components}.bin")
+    out_file = join(data, f"glove_bolukbasi_complete.bin")
     mask = list(set([w.lower() for w in WEATLists.weat_vocab]))
-    emb = MockModel.from_file(googlew2v, mock=False)
+    # with open(bolu_definitional_pairs, "r") as f:
+    #     p = json.load(f)
+    #     mask += list(set([x for x,y in p] + [y for x,y in p]))
+    # mask = list(set(mask))
+    emb = MockModel.from_file(glove, mock=False)
     emb = hard_debiase(emb, mask=mask, n_components=n_components)
     try:
         emb.save_word2vec_format(out_file, binary=True)
+        print(f"saved {out_file}")
     except:
         import traceback
         traceback.print_exc()
